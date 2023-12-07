@@ -24,6 +24,10 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	err := h.BookService.CreateBook(&book)
 	if err != nil {
+		if err.Error() == "title and author are required" {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
