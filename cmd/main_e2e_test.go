@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -41,6 +42,7 @@ func setupTestServer(t *testing.T) (*http.ServeMux, *gorm.DB) {
 
 func clearTestData(db *gorm.DB) {
 	db.Exec("DELETE FROM books")
+	fmt.Println("Clear all records")
 }
 
 func TestCreateBookE2E(t *testing.T) {
@@ -55,7 +57,11 @@ func TestCreateBookE2E(t *testing.T) {
 		t.Fatalf("Failed to send POST request: %v", err)
 	}
 	defer resp.Body.Close()
-
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("Failed to read response body: %v", err)
+	}
+	fmt.Println(string(respBody))
 	if resp.StatusCode != http.StatusCreated {
 		t.Errorf("Expected status code %d, got %d", http.StatusCreated, resp.StatusCode)
 	}
