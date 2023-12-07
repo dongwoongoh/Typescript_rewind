@@ -36,5 +36,8 @@ func main() {
 	bookHandler := handler.NewBookHandler(bookService)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/books", bookHandler.CreateBook)
-	http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8080", mux)
+	if err != nil {
+		return
+	}
 }
