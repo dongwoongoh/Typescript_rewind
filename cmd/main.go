@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"web_application/internal/service"
+
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -27,5 +29,5 @@ func main() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	fmt.Println(db)
+	service.Migrate(db)
 }
