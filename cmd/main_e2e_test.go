@@ -16,7 +16,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func setupTestServer(t *testing.T) *http.ServeMux {
+func setupTestServer(t *testing.T) (*http.ServeMux, *gorm.DB) {
 	err := godotenv.Load("/Users/mad/Desktop/dev/go/web_application/.env")
 	if err != nil {
 		t.Fatalf("Error loading .env file: %v", err)
@@ -36,14 +36,20 @@ func setupTestServer(t *testing.T) *http.ServeMux {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/books", bookHandler.CreateBook)
-	return mux
+	return mux, db
+}
+
+func clearTestData(db *gorm.DB) {
+	db.Exec("DELETE FROM books")
 }
 
 func TestCreateBookE2E(t *testing.T) {
-	server := httptest.NewServer(setupTestServer(t))
+	mux, db := setupTestServer(t)
+	server := httptest.NewServer(mux)
+	defer clearTestData(db)
 	defer server.Close()
 
-	body := bytes.NewBufferString(`{"title": "Test Book", "author": "Test Author"}`)
+	body := bytes.NewBufferString(`{"title": "Test MAD Book", "author": "Test Author"}`)
 	resp, err := http.Post(server.URL+"/books", "application/json", body)
 	if err != nil {
 		t.Fatalf("Failed to send POST request: %v", err)
@@ -56,7 +62,9 @@ func TestCreateBookE2E(t *testing.T) {
 }
 
 func TestCreateFaliedBookE2E(t *testing.T) {
-	server := httptest.NewServer(setupTestServer(t))
+	mux, db := setupTestServer(t)
+	server := httptest.NewServer(mux)
+	defer clearTestData(db)
 	defer server.Close()
 
 	body := bytes.NewBufferString(`{"title": "", "author": "Test Author"}`)
