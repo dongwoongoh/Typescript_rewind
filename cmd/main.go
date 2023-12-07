@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
+	"web_application/internal/handler"
 	"web_application/internal/service"
 
 	"github.com/joho/godotenv"
@@ -30,4 +32,9 @@ func main() {
 		panic("failed to connect database")
 	}
 	service.Migrate(db)
+	bookService := service.NewBookService(db)
+	bookHandler := handler.NewBookHandler(bookService)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/books", bookHandler.CreateBook)
+	http.ListenAndServe(":8080", mux)
 }
