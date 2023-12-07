@@ -9,33 +9,32 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestCreateBookSuccess(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+func setupDatabase(t *testing.T) *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("file:memdb1?mode=memory&cache=shared"), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("Failed to connect to database: %v", err)
 	}
 	if err := db.AutoMigrate(&model.Book{}); err != nil {
 		t.Fatalf("Failed to migrate database: %v", err)
 	}
+	return db
+}
+
+func TestCreateBookSuccess(t *testing.T) {
+	db := setupDatabase(t)
 	bookService := NewBookService(db)
 	book := &model.Book{Title: "Test Book", Author: "Test Author"}
-	err = bookService.CreateBook(book)
+	err := bookService.CreateBook(book)
 	if err != nil {
 		t.Errorf("Failed to create book: %v", err)
 	}
 }
 
 func TestCreateBookFail(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("Failed to connect to database: %v", err)
-	}
-	if err := db.AutoMigrate(&model.Book{}); err != nil {
-		t.Fatalf("Failed to migrate database: %v", err)
-	}
+	db := setupDatabase(t)
 	bookService := NewBookService(db)
 	invalidBook := &model.Book{Title: "", Author: "Test Author"}
-	err = bookService.CreateBook(invalidBook)
+	err := bookService.CreateBook(invalidBook)
 	if err == nil {
 		t.Errorf("Expected an error when creating a book with empty title, got nil")
 	} else if err.Error() != "title and author are required" {
