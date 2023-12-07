@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"web_application/internal/model"
 
 	"gorm.io/gorm"
@@ -15,6 +17,9 @@ func NewBookService(db *gorm.DB) *BookService {
 }
 
 func (s *BookService) CreateBook(book *model.Book) error {
+	if book.Title == "" || book.Author == "" {
+		return errors.New("title and author are required")
+	}
 	return s.db.Create(book).Error
 }
 
