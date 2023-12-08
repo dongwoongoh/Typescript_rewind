@@ -4,24 +4,10 @@ import (
 	"testing"
 
 	"web_application/internal/model"
-
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
-func setupDatabase(t *testing.T) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("file:memdb1?mode=memory&cache=shared"), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("Failed to connect to database: %v", err)
-	}
-	if err := db.AutoMigrate(&model.Book{}); err != nil {
-		t.Fatalf("Failed to migrate database: %v", err)
-	}
-	return db
-}
-
 func TestCreateBookSuccess(t *testing.T) {
-	db := setupDatabase(t)
+	db := SetupDatabase(t)
 	bookService := NewBookService(db)
 	book := &model.Book{Title: "Test Book", Author: "Test Author"}
 	err := bookService.CreateBook(book)
@@ -31,7 +17,7 @@ func TestCreateBookSuccess(t *testing.T) {
 }
 
 func TestCreateBookFail(t *testing.T) {
-	db := setupDatabase(t)
+	db := SetupDatabase(t)
 	bookService := NewBookService(db)
 	invalidBook := &model.Book{Title: "", Author: "Test Author"}
 	err := bookService.CreateBook(invalidBook)
