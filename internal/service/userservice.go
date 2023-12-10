@@ -32,3 +32,7 @@ func (s *UserService) GetUser(id int) (*model.User, error) {
 func (s *UserService) UpdateUser(user *model.User) error {
 	return s.db.Save(user).Error
 }
+
+func (s *UserService) DeleteUser(id int) error {
+	return s.db.Delete(&model.User{}, id).Erro
+}
