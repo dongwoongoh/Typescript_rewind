@@ -22,3 +22,13 @@ func (s *UserService) CreateUser(user *model.User) error {
 	}
 	return s.db.Create(user).Error
 }
+
+func (s *UserService) GetUser(id int) (*model.User, error) {
+	var user model.User
+	result := s.db.First(&user, id)
+	return &user, result.Error
+}
+
+func (s *UserService) UpdateUser(user *model.User) error {
+	return s.db.Save(user).Error
+}
