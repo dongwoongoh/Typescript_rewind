@@ -34,5 +34,5 @@ func (s *UserService) UpdateUser(user *model.User) error {
 }
 
 func (s *UserService) DeleteUser(id int) error {
-	return s.db.Delete(&model.User{}, id).Erro
+	return s.db.Delete(&model.User{}, id).Error
 }

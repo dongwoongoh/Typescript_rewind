@@ -24,3 +24,17 @@ func TestCreateUserFail(t *testing.T) {
 		t.Errorf("message %v", err)
 	}
 }
+
+func TestGetUser(t *testing.T) {
+	db := SetupDatabase(t)
+	userService := NewUserService(db)
+	user := &model.User{Name: "Mad123", Email: "integral"}
+	err := userService.CreateUser(user)
+	if err == nil {
+		id := 1
+		result, userErr := userService.GetUser(id)
+		if userErr == nil {
+			t.Logf("user %v:", result)
+		}
+	}
+}
