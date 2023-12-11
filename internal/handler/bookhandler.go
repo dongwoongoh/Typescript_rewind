@@ -32,5 +32,8 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(book)
+	err = json.NewEncoder(w).Encode(book)
+	if err != nil {
+		return
+	}
 }

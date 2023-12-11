@@ -7,7 +7,7 @@ import (
 )
 
 func BooksModule(db *gorm.DB) *handler.BookHandler {
-	bookService := service.NewBookService(db)
-	bookHandler := handler.NewBookHandler(bookService)
-	return bookHandler
+	bookService := *service.NewBookService(db)
+	bookHandler := *handler.NewBookHandler(&bookService)
+	return &bookHandler
 }
