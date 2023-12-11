@@ -38,3 +38,12 @@ func TestGetUser(t *testing.T) {
 		}
 	}
 }
+
+func TestGetUserFail(t *testing.T) {
+	db := SetupDatabase(t)
+	userService := NewUserService(db)
+	_, err := userService.GetUser(1)
+	if err.Error() == "error record not found" {
+		t.Errorf("error %v", err)
+	}
+}
