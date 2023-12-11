@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"web_application/internal/model"
 )
@@ -33,6 +34,7 @@ func TestGetUser(t *testing.T) {
 	if err == nil {
 		id := 1
 		result, userErr := userService.GetUser(id)
+		assert.Equal(t, user.Name, result.Name)
 		if userErr == nil {
 			t.Logf("user %v:", result)
 		}
