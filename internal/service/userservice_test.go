@@ -11,22 +11,24 @@ func TestCreateUser(t *testing.T) {
 	userService := NewUserService(db)
 	user := &model.User{Name: "Mad", Email: "integral"}
 	err := userService.CreateUser(user)
+	assert.Nil(t, err)
 	if err != nil {
 		t.Errorf("Failed to create user: %v", err)
 	}
 }
 
 func TestCreateUserFail(t *testing.T) {
+	assert := assert.New(t)
 	db := SetupDatabase(t)
 	userService := NewUserService(db)
 	invalidUser := &model.User{Name: "MAD", Email: ""}
 	err := userService.CreateUser(invalidUser)
-	if err.Error() != "field empty" {
-		t.Errorf("message %v", err)
-	}
+	assert.NotNil(err)
+	assert.EqualError(err, "field empty")
 }
 
 func TestGetUser(t *testing.T) {
+	assert := assert.New(t)
 	db := SetupDatabase(t)
 	userService := NewUserService(db)
 	user := &model.User{Name: "Mad123", Email: "integral"}
@@ -34,9 +36,9 @@ func TestGetUser(t *testing.T) {
 	if err == nil {
 		id := 1
 		result, userErr := userService.GetUser(id)
-		assert.Equal(t, user.Name, result.Name)
 		if userErr == nil {
-			t.Logf("user %v:", result)
+			assert.Nil(userErr)
+			assert.Equal(result.Name, user.Name)
 		}
 	}
 }
