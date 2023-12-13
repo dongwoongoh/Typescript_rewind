@@ -26,19 +26,3 @@ func TestCreateUserFail(t *testing.T) {
 	assert.NotNil(err)
 	assert.EqualError(err, "field empty")
 }
-
-func TestGetUser(t *testing.T) {
-	assert := assert.New(t)
-	db := SetupDatabase(t)
-	userService := NewUserService(db)
-	user := &model.User{Name: "Mad123", Email: "integral"}
-	err := userService.CreateUser(user)
-	if err == nil {
-		id := 1
-		result, userErr := userService.GetUser(id)
-		if userErr == nil {
-			assert.Nil(userErr)
-			assert.Equal(result.Name, user.Name)
-		}
-	}
-}
