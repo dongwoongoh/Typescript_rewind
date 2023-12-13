@@ -35,9 +35,7 @@ func main() {
 	dsn := modules.ConfigModule()
 	db, err := modules.OrmModule(dsn)
 	service.Migrate(db)
-	bookHandler := modules.BooksModule(db)
-	mux := http.NewServeMux()
-	mux.HandleFunc("/books", bookHandler.CreateBook)
+	mux := modules.MuxRoutes(db)
 	err = http.ListenAndServe(":8080", mux)
 	if err != nil {
 		return
