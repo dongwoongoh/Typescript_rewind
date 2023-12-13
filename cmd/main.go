@@ -15,10 +15,14 @@ type Starter struct {
 
 type StarterReturns interface {
 	Kit()
+	LineIn()
 }
 
 func (s Starter) Kit() {
 	fmt.Printf("cold message: %v, port: %v", s.message, s.port)
+}
+
+func (s Starter) LineIn() {
 	fmt.Println()
 }
 
@@ -27,6 +31,7 @@ func main() {
 	var starterReturns StarterReturns
 	starterReturns = starter
 	starterReturns.Kit()
+	starterReturns.LineIn()
 	dsn := modules.ConfigModule()
 	db, err := modules.OrmModule(dsn)
 	service.Migrate(db)
